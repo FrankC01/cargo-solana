@@ -1,0 +1,22 @@
+[package]
+name = ""
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[features]
+test-bpf = []
+
+[dependencies]
+solana-program = ""
+# Add Dependencies
+
+
+[dev-dependencies]
+solana-program-test = ""
+# Add Dependencies
+
+
+[lib]
+crate-type = ["cdylib", "lib"]

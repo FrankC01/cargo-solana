@@ -1,0 +1,28 @@
+[package]
+name = "cargo-solana"
+description = "Make building projects for Solana easier"
+version = "0.1.0"
+edition = "2021"
+license = "WTFPL"
+repository = ""
+readme = "README.md"
+keywords = ["solana", "template", "cargo", "project"]
+categories = [
+    "command-line-utilities",
+    "development-tools::cargo-plugins",
+    "development-tools::build-utils",
+    ]
+exclude = ["/ci", "images/", ".*", "target/"]
+
+[dependencies]
+cargo_toml = "0.11.4"
+clap = { version = "3.1.0", features = ["cargo"] }
+dirs = "4.0.0"
+lazy_static = "1.4.0"
+regex = "1.5.4"
+toml = "0.5"
+thiserror = "1.0.30"
+yaml-rust = "0.4.5"
+
+[[bin]]
+name = "cargo-solana"
