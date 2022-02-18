@@ -43,13 +43,23 @@ fn get_state_resource() -> String {
         .to_string()
 }
 
+fn get_lib_resource() -> String {
+    str::from_utf8(include_bytes!("../resources/program/lib.rs"))
+        .unwrap()
+        .to_string()
+}
+
 pub fn get_program_resources(new_name: String) -> HashMap<&'static str, String> {
     let mut prog_resources = HashMap::<&str, String>::new();
-    prog_resources.insert("program/entry_point.rs", get_entry_point_resource(new_name));
-    prog_resources.insert("program/error.rs", get_error_resource());
-    prog_resources.insert("program/instruction.rs", get_instruction_resource());
-    prog_resources.insert("program/process.rs", get_process_resource());
-    prog_resources.insert("program/state.rs", get_state_resource());
+    prog_resources.insert(
+        "program/src/entry_point.rs",
+        get_entry_point_resource(new_name),
+    );
+    prog_resources.insert("program/src/error.rs", get_error_resource());
+    prog_resources.insert("program/src/instruction.rs", get_instruction_resource());
+    prog_resources.insert("program/src/process.rs", get_process_resource());
+    prog_resources.insert("program/src/state.rs", get_state_resource());
+    prog_resources.insert("program/src/lib.rs", get_lib_resource());
     prog_resources
 }
 
@@ -81,7 +91,7 @@ pub fn get_solana_installed_version() -> CargoResult<String> {
 pub fn cargo_template_as_manifest() -> CargoResult<Manifest> {
     // Load template and substitute placeholders
     Ok(Manifest::from_str(
-        &str::from_utf8(include_bytes!("../resources/prog.cargo.toml")).unwrap(),
+        &str::from_utf8(include_bytes!("../resources/program/prog.cargo.toml")).unwrap(),
     )?)
 }
 

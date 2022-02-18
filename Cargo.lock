@@ -41,7 +41,6 @@ dependencies = [
  "cargo_toml",
  "clap",
  "dirs",
- "lazy_static",
  "regex",
  "thiserror",
  "toml",

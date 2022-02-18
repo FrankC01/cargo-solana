@@ -77,6 +77,7 @@ impl Configuration {
                 *deps.get_mut("solana-program").unwrap() = Dependency::Simple(solver.clone());
                 *dev_deps.get_mut("solana-program-test").unwrap() =
                     Dependency::Simple(solver.clone());
+                *dev_deps.get_mut("solana-sdk").unwrap() = Dependency::Simple(solver.clone());
                 // Complete
                 Configuration {
                     command: cmd,

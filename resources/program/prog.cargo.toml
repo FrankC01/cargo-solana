@@ -9,13 +9,19 @@ edition = "2021"
 test-bpf = []
 
 [dependencies]
+borsh = "0.9.3"
+num-derive = "0.3"
+num-traits = "0.2"
 solana-program = ""
-# Add Dependencies
+thiserror = "1.0"
+# Add additional dependencies Here if needed
 
 
 [dev-dependencies]
+assert_matches = "1.5.0"
 solana-program-test = ""
-# Add Dependencies
+solana-sdk = ""
+# Add additional dependencies here if needed
 
 
 [lib]

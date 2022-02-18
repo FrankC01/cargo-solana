@@ -18,7 +18,6 @@ exclude = ["/ci", "images/", ".*", "target/"]
 cargo_toml = "0.11.4"
 clap = { version = "3.1.0", features = ["cargo"] }
 dirs = "4.0.0"
-lazy_static = "1.4.0"
 regex = "1.5.4"
 toml = "0.5"
 thiserror = "1.0.30"
