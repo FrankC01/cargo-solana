@@ -80,6 +80,8 @@ Adds the program folder and contents and updates the root Cargo.toml to include 
 
 ## Test once created
 
-From the newly created program root:
-
-`cargo test-bpf -- --test-threads=1`
+Change into the newly created program folder:
+```bash
+cd program
+cargo test-bpf -- --test-threads=1
+```
