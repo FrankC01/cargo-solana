@@ -4,12 +4,12 @@ use cargo_toml::Workspace;
 
 use crate::{
     cli::Configuration,
-    error::{CargoResult, ProgramError},
+    error::{self, CargoResult, ProgramError},
     utils::get_program_resources,
 };
 use std::{
     env::set_current_dir,
-    fs::{create_dir, File},
+    fs::{create_dir, remove_file, rename, File},
     io::Write,
 };
 
@@ -62,30 +62,51 @@ fn create_program(config: &Configuration) -> CargoResult<()> {
 
 /// Creates the program and updates the existing Cargo.toml workspace
 pub fn create_program_update_workspace(config: &mut Configuration) -> CargoResult<()> {
-    create_program(config)?;
+    // Get and hold onto
     let mut current_dir = std::env::current_dir()?;
-    if let Some(cargo) = &mut config.init_manifest {
-        let program = "program".to_string();
-        match &mut cargo.workspace {
-            Some(workspace) => workspace.members.push(program),
-            None => {
-                cargo.workspace = Some(Workspace {
-                    members: vec![program],
-                    default_members: vec![],
-                    exclude: vec![],
-                    metadata: None,
-                    resolver: None,
-                })
+    // Generate program artifacts
+    match create_program(config) {
+        Ok(_) => {
+            let cargo = &mut config.init_manifest.clone().unwrap();
+            let program = "program".to_string();
+            match &mut cargo.workspace {
+                // Update existing
+                Some(workspace) => workspace.members.push(program),
+                // Create a whole new one
+                None => {
+                    cargo.workspace = Some(Workspace {
+                        members: vec![program],
+                        default_members: vec![],
+                        exclude: vec![],
+                        metadata: None,
+                        resolver: None,
+                    })
+                }
+            }
+            // Rename existing to recover if error
+            match rename("./Cargo.toml", "./CargoSolana.bak") {
+                Ok(_) => {
+                    let cargo_text = toml::to_string(&cargo).unwrap();
+                    current_dir.push("Cargo.toml");
+                    let mut cargo = File::create(&current_dir)?;
+                    cargo.write_all(cargo_text.as_bytes())?;
+                    remove_file("./CargoSolana.bak").unwrap();
+                    Ok(())
+                }
+                Err(e) => {
+                    current_dir.push("program");
+                    let _ = std::fs::remove_dir_all(current_dir);
+                    Err(error::ProgramError::IoError(e))
+                }
             }
         }
-        let cargo_text = toml::to_string(&cargo)?;
-        current_dir.push("Cargo.toml");
-        let mut cargo = File::create(&current_dir)?;
-        cargo.write_all(cargo_text.as_bytes())?;
-
-        // println!("{}", toml::to_string(&cargo).unwrap());
+        // Clean up program
+        Err(e) => {
+            current_dir.push("program");
+            let _ = std::fs::remove_dir_all(current_dir);
+            Err(e)
+        }
     }
-    Ok(())
 }
 
 /// Generate project then program artifacts
