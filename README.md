@@ -1,6 +1,6 @@
 # cargo-solana
 
-Cargo tool to generate boilerplate Solana program to save time in basic boilerplate setup.
+Cargo tool to generate boilerplate Solana program to save time in basic setup.
 
 Program creation behaviors:
 * If creating a project, `git` is assumed and a repo initialized
@@ -12,9 +12,13 @@ Program creation behaviors:
         * Includes initialization flag (u8) and verification
         * Includes version field (u8) for future change management. See COOKBOOK REF
     * `msg!` sprinkled throughout. Recommend removing these as you go as they consume Compute Units
-    * Addition dependencies
+    * Addition Cargo.toml `dependencies`
         * `borsh` : For serialize/deserialize
+        * `num-derive` : For custom errors `From` into Solana ProgramError
+        * `num-traits` : For custom errors `From` into Solana ProgramError
         * `thiserror` : Simplify custom error
+    * Additional Cargo.toml `dev-dependencies`
+        * `assert_matches` : For program unit testing
 
 
 ## Install
@@ -30,11 +34,16 @@ cargo install cargo-solana --path .
 `cargo solana --help`
 
 ## Scenarios
-1. You want to create a whole new project that contains the framework for Solana program
+
+### Create a new project
+
+You want to create a whole new project that contains the framework for Solana program
 
 `cargo solana create -n <PROJECT_NAME>`
 
-Generates the following in:
+Note: Does **_not_** initialize a VCS
+
+Generates the following in PROJECT_NAME:
 ```bash
     PROJECT_NAME
     Cargo.toml
@@ -48,11 +57,11 @@ Generates the following in:
             state.rs
 ```
 
-2. You just want to add a program to an existing project
+### Initialize a new program in existing project
 
 `cargo solana init -n <PROGRAM_NAME>`
 
-Adds only the program folder and contents:
+Adds the program folder and contents and updates the root Cargo.toml to include workspace member of "program":
 ```bash
     EXISTING_PROJECT_NAME
     Cargo.toml # Program folder added to `workspace` members

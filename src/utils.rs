@@ -22,7 +22,7 @@ fn get_entry_point_resource(new_name: String) -> String {
 }
 
 fn get_error_resource() -> String {
-    str::from_utf8(include_bytes!("../resources/program/state.rs"))
+    str::from_utf8(include_bytes!("../resources/program/error.rs"))
         .unwrap()
         .to_string()
 }

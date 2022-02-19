@@ -11,7 +11,7 @@
 //! `cargo soltempl full <name>`
 
 use cli::Configuration;
-use ops::{create_program, create_project_program};
+use ops::{create_program_update_workspace, create_project_program};
 
 // Modules
 mod cli;
@@ -20,11 +20,11 @@ mod ops;
 mod utils;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let config = Configuration::new()?;
+    let mut config = Configuration::new()?;
     // Go for the operation requested
     match config.command {
         cli::ExecutionCommand::Create => create_project_program(&config)?,
-        cli::ExecutionCommand::Init => create_program(&config, true)?,
+        cli::ExecutionCommand::Init => create_program_update_workspace(&mut config)?,
     }
     Ok(())
 }
