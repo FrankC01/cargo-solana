@@ -9,10 +9,15 @@ pub enum ProgramError {
     NoHomeFound,
     #[error("Solana install not found in {0}")]
     SolanaNotFound(String),
+    #[error("Project file {0} exists")]
+    ProjectExistsError(String),
+    #[error("Program folder exists")]
+    ProgramExistsError,
     // From other modules
+    CargoError(#[from] cargo_toml::Error),
     ClapError(#[from] clap::Error),
     IoError(#[from] std::io::Error),
-    CargoErrir(#[from] cargo_toml::Error),
+    TomlError(#[from] toml::ser::Error),
     YamlError(#[from] ScanError),
 }
 

@@ -10,11 +10,10 @@
 //!
 //! `cargo soltempl full <name>`
 
-use crate::{
-    cli::Configuration,
-    ops::{gen_program, init_program},
-};
+use cli::Configuration;
+use ops::{create_program, create_project_program};
 
+// Modules
 mod cli;
 mod error;
 mod ops;
@@ -24,8 +23,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let config = Configuration::new()?;
     // Go for the operation requested
     match config.command {
-        cli::ExecutionCommand::Create => gen_program(&config),
-        cli::ExecutionCommand::Init => init_program(&config),
+        cli::ExecutionCommand::Create => create_project_program(&config)?,
+        cli::ExecutionCommand::Init => create_program(&config, true)?,
     }
     Ok(())
 }

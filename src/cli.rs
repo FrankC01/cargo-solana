@@ -1,8 +1,9 @@
 //! @brief command line functions
 
+use crate::utils::{build_program_manifest, project_template_as_manifest};
+
 use {
-    crate::utils::{cargo_template_as_manifest, get_solana_installed_version},
-    cargo_toml::{Dependency, Manifest},
+    cargo_toml::Manifest,
     clap::{command, AppSettings, Arg, Command},
     std::{env, str},
 };
@@ -22,6 +23,7 @@ pub struct Configuration {
     pub command: ExecutionCommand,
     pub init_manifest: Option<Manifest>,
     pub program_manifest_template: Manifest,
+    pub project_manifest_template: Manifest,
 }
 
 impl Configuration {
@@ -63,26 +65,14 @@ impl Configuration {
                     _ => unreachable!(),
                 };
 
-                // Get version substitution variable
-                let solver = get_solana_installed_version()?;
-
-                // Load template and substitute placeholders
-                let mut prog_man = cargo_template_as_manifest()?;
-                let deps = &mut prog_man.dependencies;
-                let dev_deps = &mut prog_man.dev_dependencies;
-                match &mut prog_man.package {
-                    Some(p) => p.name = name.to_string(),
-                    None => todo!(),
-                }
-                *deps.get_mut("solana-program").unwrap() = Dependency::Simple(solver.clone());
-                *dev_deps.get_mut("solana-program-test").unwrap() =
-                    Dependency::Simple(solver.clone());
-                *dev_deps.get_mut("solana-sdk").unwrap() = Dependency::Simple(solver.clone());
-                // Complete
+                // Complete configuration with
+                // Preformatted program manifest
+                // Project manifest
                 Configuration {
                     command: cmd,
                     init_manifest: manifest,
-                    program_manifest_template: prog_man,
+                    program_manifest_template: build_program_manifest(name.to_string())?,
+                    project_manifest_template: project_template_as_manifest()?,
                     progname: name.to_string(),
                 }
             }
