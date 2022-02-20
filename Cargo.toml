@@ -1,10 +1,11 @@
 [package]
 name = "cargo-solana"
-description = "Make building projects for Solana easier"
+description = "Generates Solana Program boilerplate projects"
 version = "0.1.0"
 edition = "2021"
 license = "WTFPL"
-repository = ""
+repository = "https://github.com/FrankC01/cargo-solana"
+homepage = "https://github.com/FrankC01/cargo-solana"
 readme = "README.md"
 keywords = ["solana", "template", "cargo", "project"]
 categories = [

@@ -1,4 +1,4 @@
-//! @brief execution operations
+//! Execution operations
 
 use cargo_toml::Workspace;
 
@@ -60,7 +60,7 @@ fn create_program(config: &Configuration) -> CargoResult<()> {
     Ok(())
 }
 
-/// Creates the program and updates the existing Cargo.toml workspace
+/// Creates the program file set and updates the existing Cargo.toml workspace
 pub fn create_program_update_workspace(config: &mut Configuration) -> CargoResult<()> {
     // Get and hold onto
     let mut current_dir = std::env::current_dir()?;
@@ -109,7 +109,8 @@ pub fn create_program_update_workspace(config: &mut Configuration) -> CargoResul
     }
 }
 
-/// Generate project then program artifacts
+/// Generate new project then creates program and copies program source
+/// from resources
 pub fn create_project_program(config: &Configuration) -> CargoResult<()> {
     let mut current_dir = std::env::current_dir()?;
     current_dir.push(config.progname.clone());

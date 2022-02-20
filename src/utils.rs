@@ -1,4 +1,4 @@
-//! @brief utility functions
+//! Utility functions
 
 use crate::error::{CargoResult, ProgramError};
 use cargo_toml::{Dependency, Manifest};
@@ -7,9 +7,11 @@ use regex::Regex;
 use std::{collections::HashMap, fs::File, io::Read, path::PathBuf, str};
 use yaml_rust::YamlLoader;
 
-// Constants
+/// Mac and linux solana install location for current active version
 const SOLANA_INSTALL: &str = ".local/share/solana/install/active_release/version.yml";
+/// Keyword to the version.yml semver version id
 const VER_STRING: &str = "channel";
+/// Regex Substitution variable
 const PROG_IDENTIFIER: &str = r"PROGNAME";
 
 /// Load entry point template and substitute in program name
@@ -21,34 +23,38 @@ fn get_entry_point_resource(new_name: String) -> String {
         .to_string()
 }
 
+/// Load the program error.rs resource file
 fn get_error_resource() -> String {
     str::from_utf8(include_bytes!("../resources/program/error.rs"))
         .unwrap()
         .to_string()
 }
-
+/// Load the program instruction.rs resource file
 fn get_instruction_resource() -> String {
     str::from_utf8(include_bytes!("../resources/program/instruction.rs"))
         .unwrap()
         .to_string()
 }
+/// Load the program process.rs resource file
 fn get_process_resource() -> String {
     str::from_utf8(include_bytes!("../resources/program/process.rs"))
         .unwrap()
         .to_string()
 }
+/// Load the program state.rs resource file
 fn get_state_resource() -> String {
     str::from_utf8(include_bytes!("../resources/program/state.rs"))
         .unwrap()
         .to_string()
 }
-
+/// Load the program lib.rs resource file
 fn get_lib_resource() -> String {
     str::from_utf8(include_bytes!("../resources/program/lib.rs"))
         .unwrap()
         .to_string()
 }
 
+/// Collect all program resource files into a map
 pub fn get_program_resources(new_name: String) -> HashMap<&'static str, String> {
     let mut prog_resources = HashMap::<&str, String>::new();
     prog_resources.insert("entry_point.rs", get_entry_point_resource(new_name));
@@ -84,6 +90,8 @@ pub fn get_solana_installed_version() -> CargoResult<String> {
     }
 }
 
+/// Loads the resource program cargo file and substitute in the
+/// versions of Solana for dependencies and dev-dependencies
 pub fn build_program_manifest(name: String) -> CargoResult<Manifest> {
     // Get version substitution variable
     let solver = get_solana_installed_version()?;

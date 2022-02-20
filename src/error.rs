@@ -1,7 +1,8 @@
-//! @brief Error enums
+//! ProgramError enum
 use thiserror::Error;
 use yaml_rust::ScanError;
 
+/// Error enum for runtime
 #[derive(Debug, Error)]
 #[error("...")]
 pub enum ProgramError {

@@ -1,22 +1,22 @@
-//! @brief command line functions
+//! Command line parsing and Connfiguration building
 
 use crate::utils::{build_program_manifest, project_template_as_manifest};
 
 use {
     cargo_toml::Manifest,
     clap::{command, AppSettings, Arg, Command},
-    std::{env, str},
+    std::env,
 };
 
-// Constants
-const SOLANA_NAME: &str = "solana";
-
+/// Enum for process flow control
 #[derive(Debug)]
 pub enum ExecutionCommand {
     Create,
     Init,
 }
 
+/// Configuration contains populated fields
+/// based on the intended outcome
 #[derive(Debug)]
 pub struct Configuration {
     pub progname: String,
@@ -27,6 +27,9 @@ pub struct Configuration {
 }
 
 impl Configuration {
+    /// Instantiate a new Configuration object by parsing the
+    /// command line and loading particular Cargo manifests either
+    /// from disk (init_manifest) or from this packages resources
     pub fn new() -> Result<Self, Box<dyn std::error::Error>> {
         // If run normally, the args passed are 'cargo-solana', '<args>'.  However, if run as
         // a cargo subcommand (i.e. cargo solana <target dir>), then cargo injects a new arg:
@@ -40,7 +43,7 @@ impl Configuration {
         let mut vargs = Vec::<String>::new();
         for a in env::args() {
             match a.as_str() {
-                SOLANA_NAME => {}
+                "solana" => {}
                 _ => vargs.push(a),
             }
         }
@@ -81,25 +84,12 @@ impl Configuration {
     }
 }
 
-/// Builds command line argument parser
+/// Builds command line argument parser using rs-clap/clap
 fn build_command_line_parser() -> Command<'static> {
     command!()
         .arg_required_else_help(true)
         .global_setting(AppSettings::DeriveDisplayOrder)
         .propagate_version(true)
-        /* Create a new Solana project
-            'project'
-                Cargo.toml (with workspace member == program)
-                'program'
-                    src
-                        entry_point.ts
-                        error.rs
-                        instruction.rs
-                        process.rs
-                    tests
-                        lib.rs
-                    Cargo.toml (includes standard Solana dependencies and dev dependencies)
-        */
         .subcommand(
             Command::new("create")
                 .about("Create new Solana Program project")
@@ -112,19 +102,6 @@ fn build_command_line_parser() -> Command<'static> {
                         .help("Project's Program name (required)"),
                 ),
         )
-        /* Initialize a new Solana program folder in existing folder
-            existingproject
-                Cargo.toml (add workspace member or workspace altogether)
-                progname
-                    src
-                        entry_point.ts
-                        error.rs
-                        instruction.rs
-                        process.rs
-                    tests
-                        lib.rs
-                    Cargo.toml (includes standard Solana dependencies and dev dependencies)
-        */
         .subcommand(
             Command::new("init")
                 .about("Add Solana program to current folder")
